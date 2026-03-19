@@ -17,10 +17,10 @@ import os
 import pytest
 import numpy as np
 
-# Add repo root to path
+# Add repo root to path so utils can be imported
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from utils.math_helpers import (
+from utils.math_helpers import (  # noqa: E402
     compute_e_limit,
     compute_e_series,
     compute_e_digits,
@@ -151,16 +151,18 @@ class TestNumericalDerivative:
 
     def test_x_squared_derivative(self):
         # d/dx(x^2) = 2x
-        f = lambda x: x ** 2
+        def f_sq(x):
+            return x ** 2
         for x in [-3, -1, 0, 1, 3]:
-            deriv = numerical_derivative(f, x)
+            deriv = numerical_derivative(f_sq, x)
             assert abs(deriv - 2 * x) < 1e-5
 
     def test_constant_derivative(self):
         # d/dx(5) = 0
-        f = lambda x: 5.0
+        def f_const(x):
+            return 5.0
         for x in [-1, 0, 1]:
-            deriv = numerical_derivative(f, x)
+            deriv = numerical_derivative(f_const, x)
             assert abs(deriv) < 1e-5
 
     def test_ln_derivative(self):

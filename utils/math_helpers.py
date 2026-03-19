@@ -4,7 +4,7 @@ Pure Python + NumPy + mpmath implementations.
 """
 import math
 import numpy as np
-from mpmath import mp, mpf, e as mp_e
+from mpmath import mp, e as mp_e
 
 
 def compute_e_limit(n):

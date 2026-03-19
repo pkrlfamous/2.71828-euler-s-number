@@ -9,7 +9,7 @@ import pytest
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
-from utils.math_helpers import sigmoid, softmax, normal_pdf, poisson_pmf
+from utils.math_helpers import sigmoid, normal_pdf, poisson_pmf  # noqa: E402
 
 E = math.e
 PI = math.pi
