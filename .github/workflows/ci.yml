@@ -1,0 +1,56 @@
+name: CI — Euler's Number Project
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install flake8 pytest pytest-cov
+
+      - name: Set MPLBACKEND to Agg (no display needed)
+        run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
+
+      - name: Lint with flake8
+        run: |
+          flake8 utils/ tests/ --max-line-length=120 --extend-ignore=E501,W503
+
+      - name: Run math helper tests
+        run: |
+          pytest tests/test_math_helpers.py tests/test_formulas.py -v --tb=short
+
+      - name: Run module smoke tests
+        run: |
+          pytest tests/test_modules_importable.py -v --tb=short --timeout=60
+        continue-on-error: false
+
+      - name: Upload coverage report
+        if: matrix.python-version == '3.11'
+        run: |
+          pytest tests/test_math_helpers.py tests/test_formulas.py \
+            --cov=utils --cov-report=term-missing
