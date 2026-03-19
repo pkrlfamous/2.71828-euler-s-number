@@ -31,7 +31,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install flake8 pytest pytest-cov
+          pip install flake8 pytest pytest-cov pytest-timeout
 
       - name: Set MPLBACKEND to Agg (no display needed)
         run: echo "MPLBACKEND=Agg" >> $GITHUB_ENV
